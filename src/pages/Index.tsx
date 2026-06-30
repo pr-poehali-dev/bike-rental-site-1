@@ -1,16 +1,39 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import Layout from '@/components/site/Layout';
+import HeroSection from '@/components/site/sections/HeroSection';
+import FeaturesSection from '@/components/site/sections/FeaturesSection';
+import CatalogSection from '@/components/site/sections/CatalogSection';
+import PricingSection from '@/components/site/sections/PricingSection';
+import CompareSection from '@/components/site/sections/CompareSection';
+import ReviewsSection from '@/components/site/sections/ReviewsSection';
+import AboutSection from '@/components/site/sections/AboutSection';
+import LocationsSection from '@/components/site/sections/LocationsSection';
+import HowItWorksSection from '@/components/site/sections/HowItWorksSection';
+import BookingSection from '@/components/site/sections/BookingSection';
+import GallerySection from '@/components/site/sections/GallerySection';
+import FaqSection from '@/components/site/sections/FaqSection';
+import PartnersSection from '@/components/site/sections/PartnersSection';
+import BlogSection from '@/components/site/sections/BlogSection';
+import ContactsSection from '@/components/site/sections/ContactsSection';
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 color-black text-black">Добро пожаловать!</h1>
-        <p className="text-xl text-gray-600">тут будет отображаться ваш проект</p>
-      </div>
-      <span className="absolute bottom-8 left-1/2 -translate-x-1/2 inline-block bg-[#FF6637] text-white text-sm px-4 py-2 rounded-full whitespace-nowrap">
-        Подождите 5 минут, Юра создает первую версию проекта с нуля
-      </span>
-    </div>
+    <Layout>
+      <HeroSection />
+      <FeaturesSection />
+      <CatalogSection />
+      <PricingSection />
+      <CompareSection />
+      <ReviewsSection />
+      <AboutSection />
+      <LocationsSection />
+      <HowItWorksSection />
+      <BookingSection />
+      <GallerySection />
+      <FaqSection />
+      <PartnersSection />
+      <BlogSection />
+      <ContactsSection />
+    </Layout>
   );
 };
 

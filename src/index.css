@@ -4,81 +4,98 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Органичная природная палитра: зелень, дерево, небо */
+    --background: 60 30% 98%;
+    --foreground: 30 25% 16%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 30 25% 16%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 30 25% 16%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Лесная зелень */
+    --primary: 140 38% 32%;
+    --primary-foreground: 60 30% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Тёплое дерево / песок */
+    --secondary: 35 40% 90%;
+    --secondary-foreground: 30 35% 22%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 90 18% 93%;
+    --muted-foreground: 30 12% 42%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Небесно-голубой акцент */
+    --accent: 200 65% 88%;
+    --accent-foreground: 205 60% 22%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 48%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 35 25% 86%;
+    --input: 35 25% 86%;
+    --ring: 140 38% 32%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
+
+    /* Доп. бренд-токены */
+    --forest: 140 38% 32%;
+    --forest-deep: 145 45% 22%;
+    --wood: 28 45% 42%;
+    --wood-light: 32 50% 64%;
+    --sky: 200 75% 58%;
+    --sky-soft: 200 65% 88%;
+    --sand: 40 55% 92%;
+    --leaf: 95 50% 50%;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 145 25% 8%;
+    --foreground: 60 20% 92%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 145 22% 11%;
+    --card-foreground: 60 20% 92%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 145 22% 11%;
+    --popover-foreground: 60 20% 92%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 130 40% 55%;
+    --primary-foreground: 145 30% 10%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 30 18% 20%;
+    --secondary-foreground: 40 30% 88%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 145 15% 16%;
+    --muted-foreground: 40 12% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 200 45% 26%;
+    --accent-foreground: 200 65% 88%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62% 42%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 145 15% 20%;
+    --input: 145 15% 20%;
+    --ring: 130 40% 55%;
+
+    --forest: 130 40% 55%;
+    --forest-deep: 145 45% 30%;
+    --wood: 28 40% 52%;
+    --wood-light: 32 45% 64%;
+    --sky: 200 70% 62%;
+    --sky-soft: 200 35% 30%;
+    --sand: 40 20% 22%;
+    --leaf: 95 45% 55%;
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -97,5 +114,69 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: "Golos Text", system-ui, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-display {
+    font-family: "Oswald", system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: "Oswald", system-ui, sans-serif;
+  }
+
+  .hover-scale {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
+
+  .story-link {
+    position: relative;
+  }
+  .story-link::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: hsl(var(--primary));
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-out;
+  }
+  .story-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+
+  .bg-grain {
+    background-image: radial-gradient(
+      hsl(var(--foreground) / 0.04) 1px,
+      transparent 1px
+    );
+    background-size: 18px 18px;
+  }
+
+  .gradient-forest {
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--forest-deep)) 0%,
+      hsl(var(--forest)) 55%,
+      hsl(var(--leaf) / 0.85) 100%
+    );
+  }
+
+  .gradient-sky {
+    background-image: linear-gradient(
+      180deg,
+      hsl(var(--sky-soft)) 0%,
+      hsl(var(--sand)) 100%
+    );
   }
 }
