@@ -1,9 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import { contentApi } from '@/lib/api';
 
-const locations = [
+interface Loc {
+  id: number;
+  name: string;
+  address: string;
+  bikes: number;
+  top: string;
+  left: string;
+}
+
+interface LocApi {
+  id: number;
+  name: string;
+  address: string;
+  bikes_count: number;
+  pos_top: string;
+  pos_left: string;
+}
+
+const fallback: Loc[] = [
   { id: 1, name: 'Сокольники', address: 'Парк Сокольники, гл. вход', bikes: 64, top: '28%', left: '34%' },
   { id: 2, name: 'Воробьёвы горы', address: 'Смотровая площадка', bikes: 48, top: '62%', left: '52%' },
   { id: 3, name: 'ВДНХ', address: 'Главный вход, арка', bikes: 80, top: '20%', left: '66%' },
@@ -12,6 +31,26 @@ const locations = [
 
 const LocationsSection = () => {
   const [active, setActive] = useState(1);
+  const [locations, setLocations] = useState<Loc[]>(fallback);
+
+  useEffect(() => {
+    contentApi
+      .list<LocApi>('locations')
+      .then((items) => {
+        if (!items.length) return;
+        const mapped = items.map((l) => ({
+          id: l.id,
+          name: l.name,
+          address: l.address,
+          bikes: l.bikes_count,
+          top: l.pos_top,
+          left: l.pos_left,
+        }));
+        setLocations(mapped);
+        setActive(mapped[0].id);
+      })
+      .catch(() => undefined);
+  }, []);
 
   return (
     <section id="locations" className="py-20">

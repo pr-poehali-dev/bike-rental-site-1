@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -5,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import { contentApi } from '@/lib/api';
 
 const contacts = [
   { icon: 'MapPin', title: 'Адрес', value: 'Москва, Парк Сокольники, гл. вход' },
@@ -15,13 +17,33 @@ const contacts = [
 
 const ContactsSection = () => {
   const { toast } = useToast();
+  const [sending, setSending] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    toast({
-      title: 'Сообщение отправлено! ✉️',
-      description: 'Мы ответим вам в ближайшее время.',
-    });
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    setSending(true);
+    try {
+      await contentApi.create('contacts', {
+        name: String(fd.get('name') || ''),
+        email: String(fd.get('email') || ''),
+        message: String(fd.get('message') || ''),
+      });
+      toast({
+        title: 'Сообщение отправлено! ✉️',
+        description: 'Мы ответим вам в ближайшее время.',
+      });
+      form.reset();
+    } catch (err) {
+      toast({
+        title: 'Ошибка отправки',
+        description: (err as Error).message,
+        variant: 'destructive',
+      });
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -58,18 +80,18 @@ const ContactsSection = () => {
               <form onSubmit={submit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="c-name">Имя</Label>
-                  <Input id="c-name" placeholder="Ваше имя" required />
+                  <Input id="c-name" name="name" placeholder="Ваше имя" required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="c-email">E-mail</Label>
-                  <Input id="c-email" type="email" placeholder="you@mail.ru" required />
+                  <Input id="c-email" name="email" type="email" placeholder="you@mail.ru" required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="c-msg">Сообщение</Label>
-                  <Textarea id="c-msg" placeholder="Чем можем помочь?" rows={4} required />
+                  <Textarea id="c-msg" name="message" placeholder="Чем можем помочь?" rows={4} required />
                 </div>
-                <Button type="submit" className="w-full gradient-forest text-primary-foreground h-12">
-                  <Icon name="Send" size={18} /> Отправить сообщение
+                <Button type="submit" disabled={sending} className="w-full gradient-forest text-primary-foreground h-12">
+                  <Icon name="Send" size={18} /> {sending ? 'Отправка...' : 'Отправить сообщение'}
                 </Button>
               </form>
             </CardContent>

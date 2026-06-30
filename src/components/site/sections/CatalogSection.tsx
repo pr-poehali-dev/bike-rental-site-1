@@ -1,17 +1,30 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
-import { BIKES, CATEGORIES } from '../data';
+import { BIKES, CATEGORIES, Bike } from '../data';
+import { contentApi } from '@/lib/api';
 
 const scrollTo = (id: string) =>
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
 const CatalogSection = () => {
   const [cat, setCat] = useState<string>('Все');
-  const list = cat === 'Все' ? BIKES : BIKES.filter((b) => b.category === cat);
+  const [bikes, setBikes] = useState<Bike[]>(BIKES);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    contentApi
+      .list<Bike>('bikes')
+      .then((items) => items.length && setBikes(items))
+      .catch(() => undefined)
+      .finally(() => setLoading(false));
+  }, []);
+
+  const list = cat === 'Все' ? bikes : bikes.filter((b) => b.category === cat);
 
   return (
     <section id="catalog" className="py-20 bg-secondary/40">
@@ -37,7 +50,12 @@ const CatalogSection = () => {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {list.map((b, i) => (
+          {loading &&
+            Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-72 rounded-2xl" />
+            ))}
+          {!loading &&
+            list.map((b, i) => (
             <Card
               key={b.id}
               className="group overflow-hidden border-border hover:shadow-xl transition-all duration-300 animate-fade-in"

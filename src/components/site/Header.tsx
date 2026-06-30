@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -10,6 +11,7 @@ import {
 } from '@/components/ui/sheet';
 import Icon from '@/components/ui/icon';
 import { NAV_LINKS } from './data';
+import { useAuth } from '@/context/AuthContext';
 
 const scrollTo = (id: string) => {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -17,6 +19,8 @@ const scrollTo = (id: string) => {
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
+  const { user, isEditor } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -56,6 +60,26 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-2">
+          {isEditor && (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => navigate('/admin')}
+              title="Админ-панель"
+              className="hidden sm:inline-flex"
+            >
+              <Icon name="LayoutDashboard" size={18} />
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(user ? '/admin' : '/login')}
+            title={user ? 'Кабинет' : 'Войти'}
+            className="hidden sm:inline-flex"
+          >
+            <Icon name={user ? 'CircleUser' : 'LogIn'} size={20} />
+          </Button>
           <Button
             onClick={() => scrollTo('booking')}
             className="hidden sm:inline-flex gradient-forest text-primary-foreground hover:opacity-90"
@@ -87,6 +111,15 @@ const Header = () => {
                     </button>
                   </SheetClose>
                 ))}
+                <SheetClose asChild>
+                  <button
+                    onClick={() => navigate(user ? '/admin' : '/login')}
+                    className="text-left px-3 py-2.5 rounded-lg gradient-forest text-primary-foreground font-medium mt-3 flex items-center gap-2"
+                  >
+                    <Icon name={isEditor ? 'LayoutDashboard' : user ? 'CircleUser' : 'LogIn'} size={18} />
+                    {isEditor ? 'Админ-панель' : user ? 'Личный кабинет' : 'Войти'}
+                  </button>
+                </SheetClose>
               </nav>
             </SheetContent>
           </Sheet>

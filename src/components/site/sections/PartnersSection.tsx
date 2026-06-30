@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   HoverCard,
   HoverCardContent,
@@ -5,8 +6,17 @@ import {
 } from '@/components/ui/hover-card';
 import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
+import { contentApi } from '@/lib/api';
 
-const partners = [
+interface Partner {
+  id?: number;
+  name: string;
+  icon: string;
+  description?: string;
+  desc?: string;
+}
+
+const fallback: Partner[] = [
   { name: 'GreenCity', icon: 'Trees', desc: 'Городская программа озеленения и эко-маршрутов.' },
   { name: 'VeloSport', icon: 'Medal', desc: 'Поставщик профессиональных горных велосипедов.' },
   { name: 'EcoTour', icon: 'Compass', desc: 'Организация природных велотуров по России.' },
@@ -16,6 +26,15 @@ const partners = [
 ];
 
 const PartnersSection = () => {
+  const [partners, setPartners] = useState<Partner[]>(fallback);
+
+  useEffect(() => {
+    contentApi
+      .list<Partner>('partners')
+      .then((items) => items.length && setPartners(items))
+      .catch(() => undefined);
+  }, []);
+
   return (
     <section id="partners" className="py-20 bg-secondary/40">
       <div className="container mx-auto">
@@ -30,7 +49,7 @@ const PartnersSection = () => {
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {partners.map((p) => (
-            <HoverCard key={p.name}>
+            <HoverCard key={p.id ?? p.name}>
               <HoverCardTrigger asChild>
                 <Card className="p-6 flex flex-col items-center justify-center gap-3 cursor-pointer hover:shadow-lg hover:border-primary/40 transition-all">
                   <Icon name={p.icon} size={32} className="text-primary" />
@@ -39,7 +58,7 @@ const PartnersSection = () => {
               </HoverCardTrigger>
               <HoverCardContent className="text-sm">
                 <p className="font-semibold mb-1">{p.name}</p>
-                <p className="text-muted-foreground">{p.desc}</p>
+                <p className="text-muted-foreground">{p.description ?? p.desc}</p>
               </HoverCardContent>
             </HoverCard>
           ))}

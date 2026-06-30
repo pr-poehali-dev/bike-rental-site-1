@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,19 +14,54 @@ import {
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
-import { BIKES } from '../data';
+import { BIKES, Bike } from '../data';
+import { contentApi } from '@/lib/api';
 
 const BookingSection = () => {
   const { toast } = useToast();
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [bike, setBike] = useState<string>('');
+  const [hours, setHours] = useState<string>('2');
+  const [bikes, setBikes] = useState<Bike[]>(BIKES);
+  const [sending, setSending] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  useEffect(() => {
+    contentApi
+      .list<Bike>('bikes')
+      .then((items) => items.length && setBikes(items))
+      .catch(() => undefined);
+  }, []);
+
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    toast({
-      title: 'Заявка отправлена! 🚲',
-      description: 'Мы свяжемся с вами в течение 15 минут для подтверждения.',
-    });
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    setSending(true);
+    try {
+      await contentApi.create('bookings', {
+        name: String(fd.get('name') || ''),
+        phone: String(fd.get('phone') || ''),
+        bike,
+        hours: Number(hours),
+        booking_date: date
+          ? date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })
+          : '',
+      });
+      toast({
+        title: 'Заявка отправлена! 🚲',
+        description: 'Мы свяжемся с вами в течение 15 минут для подтверждения.',
+      });
+      form.reset();
+      setBike('');
+    } catch (err) {
+      toast({
+        title: 'Ошибка отправки',
+        description: (err as Error).message,
+        variant: 'destructive',
+      });
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -62,11 +97,11 @@ const BookingSection = () => {
               <form onSubmit={submit} className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="b-name">Ваше имя</Label>
-                  <Input id="b-name" placeholder="Иван Иванов" required />
+                  <Input id="b-name" name="name" placeholder="Иван Иванов" required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="b-phone">Телефон</Label>
-                  <Input id="b-phone" type="tel" placeholder="+7 (___) ___-__-__" required />
+                  <Input id="b-phone" name="phone" type="tel" placeholder="+7 (___) ___-__-__" required />
                 </div>
                 <div className="space-y-2">
                   <Label>Велосипед</Label>
@@ -75,7 +110,7 @@ const BookingSection = () => {
                       <SelectValue placeholder="Выберите модель" />
                     </SelectTrigger>
                     <SelectContent>
-                      {BIKES.map((b) => (
+                      {bikes.map((b) => (
                         <SelectItem key={b.id} value={b.name}>
                           {b.emoji} {b.name} — {b.price}₽/час
                         </SelectItem>
@@ -85,7 +120,7 @@ const BookingSection = () => {
                 </div>
                 <div className="space-y-2">
                   <Label>Кол-во часов</Label>
-                  <Select defaultValue="2">
+                  <Select value={hours} onValueChange={setHours}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -104,8 +139,8 @@ const BookingSection = () => {
                   </Badge>
                 )}
 
-                <Button type="submit" className="w-full gradient-forest text-primary-foreground h-12 text-base">
-                  <Icon name="CalendarCheck" size={20} /> Забронировать
+                <Button type="submit" disabled={sending} className="w-full gradient-forest text-primary-foreground h-12 text-base">
+                  <Icon name="CalendarCheck" size={20} /> {sending ? 'Отправка...' : 'Забронировать'}
                 </Button>
               </form>
             </CardContent>

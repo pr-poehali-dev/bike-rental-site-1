@@ -1,0 +1,35 @@
+{
+  "tests": [
+    {
+      "name": "Get bikes public",
+      "method": "GET",
+      "path": "/?resource=bikes",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Get reviews public",
+      "method": "GET",
+      "path": "/?resource=reviews",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Unknown resource",
+      "method": "GET",
+      "path": "/?resource=unknown",
+      "expectedStatus": 400
+    },
+    {
+      "name": "Create booking public",
+      "method": "POST",
+      "path": "/?resource=bookings",
+      "body": {"name": "Тест", "phone": "+70000000000", "bike": "Электро Volt", "hours": 2, "booking_date": "1 июля"},
+      "expectedStatus": 200
+    },
+    {
+      "name": "Bookings admin read forbidden without token",
+      "method": "GET",
+      "path": "/?resource=bookings",
+      "expectedStatus": 403
+    }
+  ]
+}

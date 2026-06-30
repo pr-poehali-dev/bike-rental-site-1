@@ -1,16 +1,37 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import { contentApi } from '@/lib/api';
 
-const reviews = [
-  { name: 'Анна Светлова', role: 'Велопрогулки', text: 'Брали электровелосипеды на весь день — восторг! Доставили вовремя, всё чистое и заряженное.', rating: 5, color: 'bg-forest' },
-  { name: 'Игорь Петров', role: 'Горный туризм', text: 'Trail X — топ для трейлов. Подвеска мягкая, переключения чёткие. Вернусь точно.', rating: 5, color: 'bg-wood' },
-  { name: 'Мария Котова', role: 'Семейный отдых', text: 'Взяли детский и два городских. Дети в восторге, цены адекватные. Спасибо за шлемы!', rating: 5, color: 'bg-sky' },
-  { name: 'Дмитрий Лес', role: 'Каждый день', text: 'Абонемент окупается за неделю. Катаюсь на работу — экономлю и здоровье, и деньги.', rating: 5, color: 'bg-leaf' },
+interface Review {
+  id?: number;
+  name: string;
+  role: string;
+  text: string;
+  rating: number;
+}
+
+const fallback: Review[] = [
+  { name: 'Анна Светлова', role: 'Велопрогулки', text: 'Брали электровелосипеды на весь день — восторг! Доставили вовремя, всё чистое и заряженное.', rating: 5 },
+  { name: 'Игорь Петров', role: 'Горный туризм', text: 'Trail X — топ для трейлов. Подвеска мягкая, переключения чёткие. Вернусь точно.', rating: 5 },
+  { name: 'Мария Котова', role: 'Семейный отдых', text: 'Взяли детский и два городских. Дети в восторге, цены адекватные. Спасибо за шлемы!', rating: 5 },
+  { name: 'Дмитрий Лес', role: 'Каждый день', text: 'Абонемент окупается за неделю. Катаюсь на работу — экономлю и здоровье, и деньги.', rating: 5 },
 ];
 
+const colors = ['bg-forest', 'bg-wood', 'bg-sky', 'bg-leaf'];
+
 const ReviewsSection = () => {
+  const [reviews, setReviews] = useState<Review[]>(fallback);
+
+  useEffect(() => {
+    contentApi
+      .list<Review>('reviews')
+      .then((items) => items.length && setReviews(items))
+      .catch(() => undefined);
+  }, []);
+
   return (
     <section id="reviews" className="py-20">
       <div className="container mx-auto">
@@ -32,7 +53,7 @@ const ReviewsSection = () => {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {reviews.map((r, i) => (
             <Card
-              key={r.name}
+              key={r.id ?? r.name}
               className="border-border hover:shadow-lg transition-all animate-fade-in"
               style={{ animationDelay: `${i * 80}ms`, opacity: 0 }}
             >
@@ -45,7 +66,7 @@ const ReviewsSection = () => {
                 <p className="text-sm text-foreground/90 leading-relaxed">«{r.text}»</p>
                 <div className="flex items-center gap-3 pt-2">
                   <Avatar>
-                    <AvatarFallback className={`${r.color} text-primary-foreground font-semibold`}>
+                    <AvatarFallback className={`${colors[i % colors.length]} text-primary-foreground font-semibold`}>
                       {r.name.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
